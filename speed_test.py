@@ -2,9 +2,9 @@
 Script de mesure de performance d'exécution
 
 Usage:
-    python processing_speed_records.py script_to_test.py
-    python processing_speed_records.py Scripts/brute_force.py
-    python processing_speed_records.py --all
+    python speed_test.py script_to_test.py
+    python speed_test.py Scripts/brute_force.py
+    python speed_test.py --all
 """
 
 import csv
@@ -16,7 +16,7 @@ from datetime import datetime
 
 
 def measure_script_execution(
-    script_path, log_csv="first_search/data/processing_speed_records.csv"
+    script_path, log_csv="data/speed_test_records.csv"
 ):
     """
     Mesure le temps d'exécution d'un script Python et enregistre dans un CSV
@@ -46,6 +46,7 @@ def measure_script_execution(
                     "timestamp",
                     "script_name",
                     "script_path",
+                    "dataset_used",
                     "execution_time_seconds",
                     "status",
                     "error_message",
@@ -55,10 +56,31 @@ def measure_script_execution(
     script_name = os.path.basename(script_path)
     timestamp = datetime.now().isoformat()
     error_message = ""
+    dataset_used = "unknown"
+
+    # Détecter le dataset utilisé en lisant le code source
+    try:
+        with open(script_path, "r", encoding="utf-8") as f:
+            script_content = f.read()
+            # Chercher les patterns de datasets
+            if "dataset_1" in script_content.lower():
+                dataset_used = "dataset_1"
+            elif "dataset_2" in script_content.lower():
+                dataset_used = "dataset_2"
+            elif "actions.csv" in script_content.lower():
+                dataset_used = "Actions.csv"
+            # Extraction plus précise avec regex
+            import re
+            csv_matches = re.findall(r'["\']([^"\']*/)?([^/"\']*(dataset|actions)[^"\']*.csv)["\']', script_content, re.IGNORECASE)
+            if csv_matches:
+                dataset_used = csv_matches[0][1]  # Prendre le nom du fichier
+    except Exception:
+        pass
 
     print(f"\n{'='*60}")
     print(f"🚀 Exécution de: {script_name}")
     print(f"📁 Chemin: {script_path}")
+    print(f"📊 Dataset: {dataset_used}")
     print(f"{'='*60}\n")
 
     try:
@@ -82,29 +104,37 @@ def measure_script_execution(
             print("✅ Exécution réussie")
         else:
             status = "error"
-            error_message = result.stderr[:200]
-            print(f"❌ Erreur d'exécution (code: {result.returncode})")
+            # Extraire seulement la dernière ligne du stderr (le message d'erreur principal)
+            if result.stderr:
+                error_lines = result.stderr.strip().split('\n')
+                last_line = error_lines[-1][:150]
+                # Simplifier le message si c'est un timeout
+                if "TimeoutError" in last_line or "Timeout reached" in last_line:
+                    error_message = "Timeout"
+                else:
+                    error_message = last_line
+            else:
+                error_message = f"Exit code {result.returncode}"
+            print(f"❌ Erreur: {error_message}")
 
         # Afficher la sortie
         if result.stdout:
             print("\n📤 Sortie standard:")
             print(result.stdout)
 
-        if result.stderr and status == "error":
-            print("\n⚠️ Erreurs:")
-            print(result.stderr[:500])
-
     except subprocess.TimeoutExpired:
         execution_time = 600
         status = "timeout"
-        error_message = "Timeout après 10 minutes"
-        print("⏱️ Timeout: Le script a dépassé 10 minutes")
+        error_message = "Script timeout (>10 min)"
+        print("⏱️ Timeout: Script interrompu après 10 minutes")
 
     except Exception as e:
         execution_time = 0
         status = "failed"
-        error_message = str(e)[:200]
-        print(f"💥 Erreur inattendue: {e}")
+        # Extraire juste le type d'erreur et le message, pas le traceback
+        error_type = type(e).__name__
+        error_message = f"{error_type}: {str(e)[:100]}"
+        print(f"💥 {error_message}")
 
     # Enregistrer dans le CSV
     with open(log_csv, "a", newline="", encoding="utf-8") as f:
@@ -114,6 +144,7 @@ def measure_script_execution(
                 timestamp,
                 script_name,
                 script_path,
+                dataset_used,
                 f"{execution_time:.4f}",
                 status,
                 error_message,
@@ -123,12 +154,14 @@ def measure_script_execution(
     # Résumé
     print(f"\n{'='*60}")
     print(f"⏱️  Temps d'exécution: {execution_time:.4f} secondes")
+    print(f"📊 Dataset: {dataset_used}")
     print(f"📊 Status: {status}")
     print(f"📝 Log enregistré dans: {log_csv}")
     print(f"{'='*60}\n")
 
     return {
         "script_name": script_name,
+        "dataset_used": dataset_used,
         "execution_time": execution_time,
         "status": status,
         "output": result.stdout if "result" in locals() else "",
@@ -137,7 +170,8 @@ def measure_script_execution(
 
 
 def test_all_scripts(
-    scripts_dir="Scripts", log_csv="first_search/data/processing_speed_records.csv"
+    scripts_dir="Scripts",
+    log_csv="data/speed_test_records.csv"
 ):
     """
     Teste tous les scripts Python d'un répertoire
@@ -171,18 +205,19 @@ def test_all_scripts(
         time.sleep(0.5)
 
     # Résumé final
-    print(f"\n{'='*60}")
+    print(f"\n{'='*70}")
     print("📊 RÉSUMÉ DES EXÉCUTIONS")
-    print(f"{'='*60}")
-    print(f"{'Script':<30} {'Temps (s)':>12} {'Status':>15}")
-    print("-" * 60)
+    print(f"{'='*70}")
+    print(f"{'Script':<25} {'Dataset':<20} {'Temps (s)':>12} {'Status':>10}")
+    print("-" * 70)
     for r in results:
         print(
-            f"{r['script_name']:<30} "
+            f"{r['script_name']:<25} "
+            f"{r['dataset_used']:<20} "
             f"{r['execution_time']:>12.4f} "
-            f"{r['status']:>15}"
+            f"{r['status']:>10}"
         )
-    print(f"{'='*60}\n")
+    print(f"{'='*70}\n")
 
 
 def show_usage():
@@ -193,28 +228,24 @@ def show_usage():
 ╚══════════════════════════════════════════════════════════════════════════╝
 
 Usage:
-    python processing_speed_records.py <script_path>
-    python processing_speed_records.py --all
-    python processing_speed_records.py --help
+    python speed_test.py <script_path>
+    python speed_test.py --all
+    python speed_test.py --help
 
 Exemples:
     # Mesurer un script spécifique
-    python processing_speed_records.py Scripts/brute_force.py
-    
+    python speed_test.py Scripts/brute_force.py!
     # Mesurer tous les scripts du dossier Scripts
-    python processing_speed_records.py --all
-    
+    python speed_test.py --all
+
     # Afficher cette aide
-    python processing_speed_records.py --help
+    python speed_test.py --help
 
 Les résultats sont automatiquement enregistrés dans:
-    first_search/data/processing_speed_records.csv
+    data/speed_test_records.csv
     """)
 
 
-def main():
-    if len(sys.argv) < 2:
-        print("❌ Erreur: Aucun argument fourni.\n")
 def main():
     """Fonction principale"""
     if len(sys.argv) < 2:
