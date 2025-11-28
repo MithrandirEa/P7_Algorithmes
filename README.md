@@ -68,6 +68,31 @@ python Scripts/brute_force_alpha.py
 python Scripts/optimized_DS1.py
 ```
 
+### 3️⃣ Algorithme Knapsack (Programmation Dynamique)
+
+**Complexité :** O(n × W) où W = capacité du sac (budget)
+
+**Principe :** Utilise la programmation dynamique pour garantir la solution optimale. L'algorithme construit une table DP en convertissant les prix en centimes pour éviter les décimales.
+
+**Fichiers :**
+- `Scripts/AI-optimized_knap_DS1.py` - Knapsack optimisé pour dataset 1
+- `Scripts/AI-optimized_knap_DS2.py` - Knapsack optimisé pour dataset 2
+
+**Performances :**
+- 🎯 Utilisation du budget : ~99.99% (499.92-499.96€)
+- 📈 Rendement global : ~39.6-39.7%
+- ⚡ Temps d'exécution : ~1.5-3.0 secondes (interne), ~1.9-3.0s (total)
+
+**Avantages :**
+- ✅ Solution garantie optimale (contrairement au greedy)
+- ✅ Temps raisonnable même sur 1000 actions
+- ✅ Optimisation mémoire (2 lignes au lieu de n×W)
+
+```python
+# Exemple d'utilisation
+python Scripts/AI-optimized_knap_DS1.py
+```
+
 ## 🛠️ Outil de Benchmark
 
 ### speed_test.py
@@ -75,10 +100,12 @@ python Scripts/optimized_DS1.py
 Script de mesure de performance d'exécution avec enregistrement automatique des résultats.
 
 **Fonctionnalités :**
-- Mesure du temps d'exécution réel (subprocess)
+- Mesure du temps d'exécution réel (subprocess) et interne (script)
+- Extraction automatique du prix total et bénéfice total
 - Détection automatique du dataset utilisé
 - Gestion des timeouts et erreurs
 - Logs CSV avec horodatage
+- Tableau récapitulatif avec 7 colonnes : Script, Dataset, Temps, T.Script, Status, Prix, Bénéfice
 
 **Usage :**
 
@@ -136,13 +163,15 @@ python speed_test.py --all
 
 ## 📈 Résultats Comparatifs
 
-| Algorithme | Dataset | Temps | Budget utilisé | Bénéfice total | Rendement |
-|------------|---------|-------|----------------|----------------|-----------|
-| Brute Force | Actions.csv | ~1.0s | - | - | Optimal ✅ |
-| Brute Force | dataset_1 | **Timeout (>10s)** | - | - | ⚠️ |
+| Algorithme | Dataset | Temps Total | Temps Interne | Budget utilisé | Bénéfice total | Rendement |
+|------------|---------|-------------|---------------|----------------|----------------|-----------||
+| Brute Force | Actions.csv | 1.01s | 0.94s | 498.00€ (99.60%) | 99.08€ | 19.90% |
+| Brute Force | dataset_1 | **Timeout (>10s)** | - | - | - | ⚠️ |
 | Brute Force | dataset_2 | **Timeout (>10s)** | - | - | ⚠️ |
-| Optimized | dataset_1 | ~0.02s | 99.99% | 198.51€ | 39.71% |
-| Optimized | dataset_2 | ~0.01s | 100.00% | 197.77€ | 39.56% |
+| Optimized (Greedy) | dataset_1 | 0.35s | 0.017s | 499.94€ (99.99%) | 198.51€ | 39.71% |
+| Optimized (Greedy) | dataset_2 | 0.38s | 0.012s | 499.98€ (100.00%) | 197.77€ | 39.56% |
+| Knapsack (DP) | dataset_1 | 3.03s | 2.68s | 499.96€ (99.99%) | 198.55€ | 39.71% |
+| Knapsack (DP) | dataset_2 | 1.89s | 1.52s | 499.92€ (99.98%) | 197.96€ | 39.60% |
 
 ## 🧮 Complexité Algorithmique
 
@@ -156,17 +185,24 @@ python speed_test.py --all
 - **Espace :** O(n)
 - **Optimal :** ⚠️ Quasi-optimal (heuristique gloutonne)
 
+### Knapsack (Programmation Dynamique)
+- **Temps :** O(n × W) où W = budget × 100 (en centimes)
+- **Espace :** O(W) (optimisé avec 2 lignes au lieu de n×W)
+- **Optimal :** ✅ Oui (solution garantie optimale)
+
 ## 📝 Structure du Projet
 
 ```
 P7_Algorithmes/
 │
 ├── Scripts/
-│   ├── brute_force_alpha.py      # Brute force sur Actions.csv
+│   ├── brute_force_alpha.py       # Brute force sur Actions.csv
 │   ├── brute_force_DS1.py         # Brute force dataset 1 (timeout 10s)
 │   ├── brute_force_DS2.py         # Brute force dataset 2 (timeout 10s)
-│   ├── optimized_DS1.py           # Algorithme optimisé dataset 1
-│   └── optimized_DS2.py           # Algorithme optimisé dataset 2
+│   ├── optimized_DS1.py           # Algorithme Greedy dataset 1
+│   ├── optimized_DS2.py           # Algorithme Greedy dataset 2
+│   ├── AI-optimized_knap_DS1.py   # Knapsack DP dataset 1
+│   └── AI-optimized_knap_DS2.py   # Knapsack DP dataset 2
 │
 ├── data/
 │   ├── Actions.csv                # Dataset initial (20 actions)
@@ -200,11 +236,12 @@ Le tri par pourcentage de profit maximise le rendement par euro investi, assuran
 
 ## 🔧 Améliorations Possibles
 
-1. **Programmation Dynamique** : Implémentation d'un algorithme de Knapsack pour garantir l'optimal en O(n×W)
-2. **Branch & Bound** : Accélérer le brute-force avec élagage
-3. **Génération de rapports PDF** : Export automatique des résultats
+1. **Branch & Bound** : Accélérer le brute-force avec élagage intelligent
+2. **Algorithmes avancés** : Branch & Cut, FPTAS (Fully Polynomial Time Approximation Scheme)
+3. **Génération de rapports PDF** : Export automatique des résultats avec graphiques
 4. **API REST** : Exposer les algorithmes via une API web
-5. **Interface graphique** : Visualisation interactive des résultats
+5. **Interface graphique** : Visualisation interactive des résultats et comparaisons
+6. **Analyse de sensibilité** : Impact de la variation du budget sur les résultats
 
 ## 📄 Licence
 
@@ -218,4 +255,4 @@ Projet éducatif OpenClassroom - C7
 
 ---
 
-*Dernière mise à jour : 27 novembre 2025*
+*Dernière mise à jour : 28 novembre 2025*

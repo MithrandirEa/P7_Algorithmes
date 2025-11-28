@@ -121,6 +121,25 @@ def measure_script_execution(
         if result.stdout:
             print("\n📤 Sortie standard:")
             print(result.stdout)
+            
+            # Extraire prix total, bénéfice total et temps interne depuis stdout
+            total_price = None
+            total_benefit = None
+            script_time = None
+            for line in result.stdout.split('\n'):
+                if 'Prix total du bouquet' in line or 'Total price' in line or 'Total cost' in line:
+                    import re
+                    match = re.search(r'([\d.]+)\s*euros?', line)
+                    if match:
+                        total_price = float(match.group(1))
+                elif 'Profit total' in line or 'Total benefit' in line:
+                    match = re.search(r'([\d.]+)\s*euros?', line)
+                    if match:
+                        total_benefit = float(match.group(1))
+                elif 'Time taken' in line or 'Temps d' in line:
+                    match = re.search(r'([\d.]+)\s*seconds?', line)
+                    if match:
+                        script_time = float(match.group(1))
 
     except subprocess.TimeoutExpired:
         execution_time = 600
@@ -166,6 +185,9 @@ def measure_script_execution(
         "status": status,
         "output": result.stdout if "result" in locals() else "",
         "error": error_message,
+        "total_price": total_price if 'total_price' in locals() else None,
+        "total_benefit": total_benefit if 'total_benefit' in locals() else None,
+        "script_time": script_time if 'script_time' in locals() else None,
     }
 
 
@@ -205,19 +227,25 @@ def test_all_scripts(
         time.sleep(0.5)
 
     # Résumé final
-    print(f"\n{'='*70}")
+    print(f"\n{'='*130}")
     print("📊 RÉSUMÉ DES EXÉCUTIONS")
-    print(f"{'='*70}")
-    print(f"{'Script':<25} {'Dataset':<20} {'Temps (s)':>12} {'Status':>10}")
-    print("-" * 70)
+    print(f"{'='*130}")
+    print(f"{'Script':<25} {'Dataset':<20} {'Temps (s)':>12} {'T.Script(s)':>13} {'Status':>10} {'Prix (€)':>12} {'Bénéfice (€)':>15}")
+    print("-" * 130)
     for r in results:
+        price_str = f"{r['total_price']:.2f}" if r.get('total_price') else "-"
+        benefit_str = f"{r['total_benefit']:.2f}" if r.get('total_benefit') else "-"
+        script_time_str = f"{r['script_time']:.4f}" if r.get('script_time') else "-"
         print(
             f"{r['script_name']:<25} "
             f"{r['dataset_used']:<20} "
             f"{r['execution_time']:>12.4f} "
-            f"{r['status']:>10}"
+            f"{script_time_str:>13} "
+            f"{r['status']:>10} "
+            f"{price_str:>12} "
+            f"{benefit_str:>15}"
         )
-    print(f"{'='*70}\n")
+    print(f"{'='*130}\n")
 
 
 def show_usage():
