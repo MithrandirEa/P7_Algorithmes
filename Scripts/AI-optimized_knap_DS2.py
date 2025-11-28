@@ -1,56 +1,58 @@
 """
-Je ne comprends pas encore la logique du KnapSack. Ce script est générer par l'ia afin de pouvoir comparer avec mes scripts.
+Algorithme Knapsack 0/1 optimisé avec programmation dynamique
+Optimisations: numpy vectorization, granularité centimes, pré-tri
 """
 
 import pandas as pd
+import numpy as np
 from time import perf_counter
 
 t_start = perf_counter()
 
 
 def knapsack_01(actions, max_budget):
-    """Algorithme du sac à dos 0/1 par programmation dynamique optimisée"""
+    """Knapsack 0/1 avec numpy pour performances maximales"""
     n = len(actions)
     budget_cents = int(max_budget * 100)
     
-    prices = [int(action['price'] * 100) for action in actions]
-    benefits = [action['benefit_2y'] for action in actions]
+    # Conversion en numpy arrays pour vectorisation
+    prices = np.array([int(action['price'] * 100) for action in actions], dtype=np.int32)
+    benefits = np.array([action['benefit_2y'] for action in actions], dtype=np.float32)
     
-    # Table DP optimisée: seulement 2 lignes au lieu de n+1
-    prev = [0.0] * (budget_cents + 1)
-    curr = [0.0] * (budget_cents + 1)
+    # Pré-tri par ratio benefit/price pour meilleure exploration
+    ratios = benefits / (prices / 100)
+    sorted_idx = np.argsort(ratios)[::-1]
+    prices = prices[sorted_idx]
+    benefits = benefits[sorted_idx]
+    actions_sorted = [actions[i] for i in sorted_idx]
     
-    # Matrice pour le backtracking
-    keep = [[False] * (budget_cents + 1) for _ in range(n + 1)]
+    # Table DP: une seule ligne (prev)
+    dp = np.zeros(budget_cents + 1, dtype=np.float32)
     
-    for i in range(1, n + 1):
-        price = prices[i - 1]
-        benefit = benefits[i - 1]
+    # Matrice keep compacte (bool pour économiser mémoire)
+    keep = np.zeros((n + 1, budget_cents + 1), dtype=np.bool_)
+    
+    for i in range(n):
+        price = prices[i]
+        benefit = benefits[i]
         
-        for w in range(budget_cents + 1):
-            if price > w:
-                curr[w] = prev[w]
-            else:
-                without = prev[w]
-                with_item = prev[w - price] + benefit
-                if with_item > without:
-                    curr[w] = with_item
-                    keep[i][w] = True
-                else:
-                    curr[w] = without
-        
-        prev, curr = curr, prev
+        # Parcourir en sens inverse pour éviter le doublon
+        for w in range(budget_cents, price - 1, -1):
+            new_val = dp[w - price] + benefit
+            if new_val > dp[w]:
+                dp[w] = new_val
+                keep[i + 1, w] = True
     
-    # Backtracking
+    # Backtracking optimisé
     selected = []
     w = budget_cents
     for i in range(n, 0, -1):
-        if keep[i][w]:
-            selected.append(actions[i - 1])
+        if keep[i, w]:
+            selected.append(actions_sorted[i - 1])
             w -= prices[i - 1]
     
     selected.reverse()
-    return prev[budget_cents], selected
+    return float(dp[budget_cents]), selected
 
 
 df = pd.read_csv("first_search/data/dataset_2.csv")
