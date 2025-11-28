@@ -161,18 +161,6 @@ python Scripts/brute_force_alpha.py
 python speed_test.py --all
 ```
 
-## 📈 Résultats Comparatifs
-
-| Algorithme | Dataset | Temps Total | Temps Interne | Budget utilisé | Bénéfice total | Rendement |
-|------------|---------|-------------|---------------|----------------|----------------|-----------||
-| Brute Force | Actions.csv | 1.01s | 0.94s | 498.00€ (99.60%) | 99.08€ | 19.90% |
-| Brute Force | dataset_1 | **Timeout (>10s)** | - | - | - | ⚠️ |
-| Brute Force | dataset_2 | **Timeout (>10s)** | - | - | ⚠️ |
-| Optimized (Greedy) | dataset_1 | 0.35s | 0.017s | 499.94€ (99.99%) | 198.51€ | 39.71% |
-| Optimized (Greedy) | dataset_2 | 0.38s | 0.012s | 499.98€ (100.00%) | 197.77€ | 39.56% |
-| Knapsack (DP) | dataset_1 | 3.03s | 2.68s | 499.96€ (99.99%) | 198.55€ | 39.71% |
-| Knapsack (DP) | dataset_2 | 1.89s | 1.52s | 499.92€ (99.98%) | 197.96€ | 39.60% |
-
 ## 🧮 Complexité Algorithmique
 
 ### Brute Force

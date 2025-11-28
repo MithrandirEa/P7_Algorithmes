@@ -1,6 +1,4 @@
 .venv/
 .vscode/
-*.csv
-*.txt
 data/speed_test_records.csv
 first_search/
