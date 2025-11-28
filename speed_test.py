@@ -191,6 +191,54 @@ def measure_script_execution(
     }
 
 
+def load_sienna_decisions():
+    """
+    Charge les décisions d'achat de Sienna depuis les fichiers texte
+    
+    Returns:
+        dict: Dictionnaire avec les résultats de Sienna par dataset
+    """
+    sienna_results = {}
+    
+    # Dataset 1
+    file1 = "data/Decisions_achat_1.txt"
+    if os.path.exists(file1):
+        try:
+            with open(file1, 'r', encoding='utf-8') as f:
+                content = f.read()
+                import re
+                # Extraire coût et profit
+                cost_match = re.search(r'Total cost:\s*([\d.]+)', content)
+                profit_match = re.search(r'Total return:\s*([\d.]+)', content)
+                if cost_match and profit_match:
+                    sienna_results['dataset_1'] = {
+                        'price': float(cost_match.group(1)),
+                        'benefit': float(profit_match.group(1))
+                    }
+        except Exception:
+            pass
+    
+    # Dataset 2
+    file2 = "data/Decisions-achat-2.txt"
+    if os.path.exists(file2):
+        try:
+            with open(file2, 'r', encoding='utf-8') as f:
+                content = f.read()
+                import re
+                # Extraire coût et profit
+                cost_match = re.search(r'Total cost:\s*([\d.]+)', content)
+                profit_match = re.search(r'Profit:\s*([\d.]+)', content)
+                if cost_match and profit_match:
+                    sienna_results['dataset_2'] = {
+                        'price': float(cost_match.group(1)),
+                        'benefit': float(profit_match.group(1))
+                    }
+        except Exception:
+            pass
+    
+    return sienna_results
+
+
 def test_all_scripts(
     scripts_dir="Scripts",
     log_csv="data/speed_test_records.csv"
@@ -226,16 +274,27 @@ def test_all_scripts(
             results.append(result)
         time.sleep(0.5)
 
+    # Charger les décisions de Sienna
+    sienna_data = load_sienna_decisions()
+    
     # Résumé final
-    print(f"\n{'='*130}")
+    print(f"\n{'='*155}")
     print("📊 RÉSUMÉ DES EXÉCUTIONS")
-    print(f"{'='*130}")
-    print(f"{'Script':<25} {'Dataset':<20} {'Temps (s)':>12} {'T.Script(s)':>13} {'Status':>10} {'Prix (€)':>12} {'Bénéfice (€)':>15}")
-    print("-" * 130)
+    print(f"{'='*155}")
+    print(f"{'Script':<25} {'Dataset':<20} {'Temps (s)':>12} {'T.Script(s)':>13} {'Status':>10} {'Prix (€)':>12} {'Bénéfice (€)':>15} {'Δ Sienna (€)':>15}")
+    print("-" * 155)
     for r in results:
         price_str = f"{r['total_price']:.2f}" if r.get('total_price') else "-"
         benefit_str = f"{r['total_benefit']:.2f}" if r.get('total_benefit') else "-"
         script_time_str = f"{r['script_time']:.4f}" if r.get('script_time') else "-"
+        
+        # Calculer la différence avec Sienna
+        delta_str = "-"
+        dataset_key = r['dataset_used'].replace('.csv', '')
+        if dataset_key in sienna_data and r.get('total_benefit'):
+            delta = r['total_benefit'] - sienna_data[dataset_key]['benefit']
+            delta_str = f"{delta:+.2f}"
+        
         print(
             f"{r['script_name']:<25} "
             f"{r['dataset_used']:<20} "
@@ -243,9 +302,18 @@ def test_all_scripts(
             f"{script_time_str:>13} "
             f"{r['status']:>10} "
             f"{price_str:>12} "
-            f"{benefit_str:>15}"
+            f"{benefit_str:>15} "
+            f"{delta_str:>15}"
         )
-    print(f"{'='*130}\n")
+    
+    # Afficher les résultats de Sienna en bas
+    if sienna_data:
+        print("-" * 155)
+        print("\n📋 Décisions d'achat de Sienna (référence):")
+        for dataset_key, data in sienna_data.items():
+            print(f"   • {dataset_key}: {data['price']:.2f}€ → {data['benefit']:.2f}€ de bénéfice")
+    
+    print(f"\n{'='*155}\n")
 
 
 def show_usage():
