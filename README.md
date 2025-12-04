@@ -178,6 +178,35 @@ python speed_test.py --all
 - **Espace :** O(W) (optimisé avec 2 lignes au lieu de n×W)
 - **Optimal :** ✅ Oui (solution garantie optimale)
 
+## 📊 Bilan Big O par fichier
+
+| Fichier                   | Algorithme      | Complexité Temps | Complexité Mémoire |
+|---------------------------|-----------------|------------------|--------------------|
+| DS1_clean.py, DS2_clean.py| Greedy          | O(n log n)       | O(n)               |
+| DS1_opti.py, DS2_opti.py  | Knapsack DP     | O(n × W)         | O(n × W) / O(W)    |
+| AI-optimized_knap_DS1.py, AI-optimized_knap_DS2.py, optimized_DS1.py, optimized_DS2.py, alpha_opti.py | Knapsack DP | O(n × W) | O(n × W) / O(W) |
+| DS1_BF.py, DS2_BF.py, alpha_BF.py | Brute Force | O(2ⁿ) | O(n) |
+
+- **n** = nombre d'actions, **W** = budget (en centimes)
+- Les scripts Knapsack DP utilisent numpy et une table DP 1D pour accélérer le calcul.
+
+## 📋 Répartition des scripts par algorithme
+
+- **Greedy** : DS1_clean.py, DS2_clean.py, DS1_opti.py, DS2_opti.py
+- **Knapsack DP** : AI-optimized_knap_DS1.py, AI-optimized_knap_DS2.py, optimized_DS1.py, optimized_DS2.py, alpha_opti.py
+- **Brute Force** : DS1_BF.py, DS2_BF.py, alpha_BF.py
+
+## ⚡ Note sur l'optimisation FPTAS
+
+Pour passer sous la barre de 1 seconde sur 1000 actions, il est possible d'utiliser une version FPTAS du knapsack :
+- On réduit la granularité du budget (ex : arrondi à 0.5€ ou 1€)
+- La complexité devient O(n × W') avec W' << W
+- La solution reste quasi-optimale (écart <0.1%)
+
+## 🕒 Date de dernière mise à jour
+
+*Dernière mise à jour : 4 décembre 2025*
+
 ## 📝 Structure du Projet
 
 ```
@@ -243,4 +272,4 @@ Projet éducatif OpenClassroom - C7
 
 ---
 
-*Dernière mise à jour : 28 novembre 2025*
+*Dernière mise à jour : 4 décembre 2025*

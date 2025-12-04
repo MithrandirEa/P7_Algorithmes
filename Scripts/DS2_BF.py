@@ -3,10 +3,10 @@ from itertools import combinations
 from time import perf_counter
 
 t_start = perf_counter()
-TIMEOUT_SECONDS = 10  # 10 seconds
+TIMEOUT_SECONDS = 10  # Timeout pour ne pas tourner 2h
 
 
-def read_actions_from_csv(file="first_search/data/dataset_2.csv"):
+def read_actions_from_csv(file="data/dataset_2.csv"):
     """Lit les actions depuis un fichier CSV avec gestion des pourcentages"""
     actions = []
     with open(file, "r") as f:
