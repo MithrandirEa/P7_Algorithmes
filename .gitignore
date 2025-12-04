@@ -2,4 +2,4 @@
 .vscode/
 data/speed_test_records.csv
 first_search/
-Analyse.ipynb
+*.ipynb
