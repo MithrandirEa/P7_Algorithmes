@@ -1,11 +1,4 @@
 """
-Brute-force.py est un script python qui cherche à composer par brute-force
-un portefeuille d'action maximisant le profit tout en respectant trois
-contraintes :
-- une action ne peut être achetée qu'une seule fois
-- une action est insécable
-- le budget total alloué ne peut pas être dépassé. Budget_max = 500 euros
-
 Fonctionnement :
 - on génère toutes les combinaisons possibles d'actions
 - on filtre les combinaisons respectant la contrainte de budget
@@ -70,7 +63,7 @@ def find_best_combination(actions, max_budget=500):
 
 
 # Lecture des actions et recherche de la meilleure combinaison
-actions = read_actions_from_csv("first_search/data/Actions.csv")
+actions = read_actions_from_csv("data/Actions.csv")
 best = find_best_combination(actions)
 # Affichage du résultat
 if best:

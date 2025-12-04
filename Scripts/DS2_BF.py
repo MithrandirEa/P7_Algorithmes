@@ -6,7 +6,7 @@ t_start = perf_counter()
 TIMEOUT_SECONDS = 10  # 10 seconds
 
 
-def read_actions_from_csv(file="first_search/data/dataset_1.csv"):
+def read_actions_from_csv(file="first_search/data/dataset_2.csv"):
     """Lit les actions depuis un fichier CSV avec gestion des pourcentages"""
     actions = []
     with open(file, "r") as f:
@@ -14,10 +14,7 @@ def read_actions_from_csv(file="first_search/data/dataset_1.csv"):
         for row in reader:
             coast = float(row["price"])
             benefit = float(row["benefit_2y"])
-            actions.append({"name": row["name"],
-                            "price": coast,
-                            "benefit_2y": benefit
-                            })
+            actions.append({"name": row["name"], "price": coast, "benefit_2y": benefit})
     return actions
 
 
@@ -35,7 +32,7 @@ def find_best_combination(actions, max_budget=500, timeout=TIMEOUT_SECONDS):
             # Vérifier le timeout
             if perf_counter() - start_time > timeout:
                 raise TimeoutError("Timeout reached")
-
+            
             total_coast = sum(action["price"] for action in combo)
 
             # Vérifier si la combinaison respecte le budget
@@ -55,7 +52,7 @@ def find_best_combination(actions, max_budget=500, timeout=TIMEOUT_SECONDS):
 
 
 # Lecture des actions et recherche de la meilleure combinaison
-actions = read_actions_from_csv("first_search/data/dataset_1_cured.csv")
+actions = read_actions_from_csv("data/dataset_2.csv")
 best = find_best_combination(actions)
 
 # Affichage du résultat
@@ -77,3 +74,4 @@ else:
     print("⚠️ Aucune combinaison trouvée dans le temps imparti")
 
 print(f"\n⏱️ Time taken: {elapsed_time:.4f} seconds")
+
