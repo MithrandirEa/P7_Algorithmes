@@ -45,8 +45,7 @@ t_stop = perf_counter()
 for action in selected_actions:
     print(f"{action['name']}: prix={action['price']}€, bénéfice={action['benefit_2y']:.2f}€")
 
-# Résumé compatible extraction automatique speed_test.py
-# (ne pas modifier les libellés ci-dessous)
+
 total_price = sum(a['price'] for a in selected_actions)
 total_benefit = sum(a['benefit_2y'] for a in selected_actions)
 print(f"Prix total du bouquet d'actions: {total_price:.2f} euros")

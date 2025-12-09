@@ -1,12 +1,3 @@
-"""
-Script de mesure de performance d'exécution
-
-Usage:
-    python speed_test.py script_to_test.py
-    python speed_test.py Scripts/brute_force.py
-    python speed_test.py --all
-"""
-
 import csv
 import os
 import subprocess
@@ -18,17 +9,7 @@ from datetime import datetime
 def measure_script_execution(
     script_path, log_csv="data/speed_test_records.csv"
 ):
-    """
-    Mesure le temps d'exécution d'un script Python et enregistre dans un CSV
-
-    Args:
-        script_path (str): Chemin vers le script à exécuter
-        log_csv (str): Chemin vers le fichier CSV de logs
-
-    Returns:
-        dict: Résultats de l'exécution (temps, status, output)
-    """
-
+  
     # Vérifier que le script existe
     if not os.path.exists(script_path):
         print(f"❌ Erreur: Le script '{script_path}' n'existe pas.")
