@@ -68,8 +68,14 @@ def measure_script_execution(
         # Mesurer le temps d'exécution
         start_time = time.perf_counter()
 
+        import sys
+        python_executable = sys.executable  # Par défaut
+        # Si un venv est détecté, utiliser son python
+        venv_python = os.path.join('.venv', 'Scripts', 'python.exe')
+        if os.path.exists(venv_python):
+            python_executable = os.path.abspath(venv_python)
         result = subprocess.run(
-            [sys.executable, script_path],
+            [python_executable, script_path],
             capture_output=True,
             text=True,
             timeout=600,  # 10 minutes timeout
@@ -99,14 +105,13 @@ def measure_script_execution(
             print(f"❌ Erreur: {error_message}")
 
         # Afficher la sortie
+        total_price = None
+        total_benefit = None
+        script_time = None
         if result.stdout:
             print("\n📤 Sortie standard:")
             print(result.stdout)
-            
             # Extraire prix total, bénéfice total et temps interne depuis stdout
-            total_price = None
-            total_benefit = None
-            script_time = None
             for line in result.stdout.split('\n'):
                 if 'Prix total du bouquet' in line or 'Total price' in line or 'Total cost' in line:
                     import re
@@ -121,6 +126,7 @@ def measure_script_execution(
                     match = re.search(r'([\d.]+)\s*seconds?', line)
                     if match:
                         script_time = float(match.group(1))
+
 
     except subprocess.TimeoutExpired:
         execution_time = 600
