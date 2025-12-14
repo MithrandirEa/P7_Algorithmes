@@ -1,97 +1,182 @@
+
 # 📈 P7_Algorithmes - Optimisation de Portefeuille d'Actions
 
-Projet OpenClassroom C7 : Résoudre des problèmes en utilisant des algorithmes en Python
+Projet OpenClassroom C7 : Résoudre des problèmes d'optimisation de portefeuille d'actions en Python
 
 ## 🎯 Objectif
 
-Développer des algorithmes pour composer un portefeuille d'actions maximisant le profit sur 2 ans, sous trois contraintes :
-- ✅ Une action ne peut être achetée qu'une seule fois
-- ✅ Une action est insécable (pas de fractionnement)
-- ✅ Budget maximum : **500€**
+Développer et comparer plusieurs algorithmes pour maximiser le profit sur 2 ans, sous contraintes :
+- Une action ne peut être achetée qu'une seule fois
+- Une action est insécable
+- Budget maximum : **500€**
 
 ## 📊 Datasets
 
-### Actions.csv (20 actions)
-Dataset initial pour les tests rapides et le prototypage.
-
-### dataset_1.csv & dataset_2.csv (1000 actions)
-Datasets de production après nettoyage :
-- Suppression des valeurs NaN
-- Filtrage des prix et profits négatifs ou nuls
-- Calcul du bénéfice sur 2 ans : `benefit_2y = price × profit / 100`
+- `Actions.csv` : 20 actions (prototypage)
+- `dataset_1.csv` & `dataset_2.csv` : 1000 actions (production)
+	- Nettoyage : suppression NaN, prix/profit négatifs, calcul `benefit_2y = price × profit / 100`
 
 ## 🚀 Algorithmes Implémentés
 
-### 1️⃣ Brute Force (Recherche Exhaustive)
+### 1️⃣ Brute Force (Recherche exhaustive)
+- **Scripts :** `alpha_BF.py`, `DS1_BF.py`, `DS2_BF.py`
+- **Complexité :** O(2ⁿ)
+- **Usage :**
+	```bash
+	python Scripts/alpha_BF.py
+	python Scripts/DS1_BF.py
+	python Scripts/DS2_BF.py
+	```
+- **Remarque :** Timeout 10s pour les gros datasets
 
-**Complexité :** O(2ⁿ) - Exponentielle
+### 2️⃣ Knapsack (Programmation Dynamique)
+- **Scripts :** `alpha_opti.py`, `DS1_opti.py`, `DS2_opti.py`
+- **Complexité :** O(n × W) (W = budget en centimes)
+- **Usage :**
+	```bash
+	python Scripts/alpha_opti.py
+	python Scripts/DS1_opti.py
+	python Scripts/DS2_opti.py
+	```
+- **Remarque :** Solution optimale, rapide pour n ≤ 1000
 
-**Principe :** Génère et évalue toutes les combinaisons possibles d'actions.
+### 3️⃣ Knapsack optimisé Numba (JIT)
+- **Scripts :** `DS1_opti2.py.py`, `DS2_opti2.py`
+- **Complexité :** O(n × W) mais accéléré par Numba
+- **Usage :**
+	```bash
+	python Scripts/DS1_opti2.py.py
+	python Scripts/DS2_opti2.py
+	```
+- **Remarque :** Identique à la version DP mais 5-10x plus rapide grâce à la compilation JIT
 
-**Fichiers :**
-- `Scripts/brute_force_alpha.py` - Version de base sur Actions.csv
-- `Scripts/brute_force_DS1.py` - Dataset 1 avec timeout 10s
-- `Scripts/brute_force_DS2.py` - Dataset 2 avec timeout 10s
+### 4️⃣ Résumé des scripts
 
-**Caractéristiques :**
-- ✅ Garantit la solution optimale
-- ⚠️ Timeout de 10 secondes pour éviter les temps d'exécution trop longs
-- ❌ Non viable pour datasets de grande taille (>25 actions)
+| Script              | Dataset         | Algorithme         | Optimisation |
+|---------------------|----------------|--------------------|--------------|
+| alpha_BF.py         | Actions.csv    | Brute Force        | -            |
+| alpha_opti.py       | Actions.csv    | Knapsack DP        | -            |
+| DS1_BF.py           | dataset_1.csv  | Brute Force        | -            |
+| DS1_opti.py         | dataset_1.csv  | Knapsack DP        | -            |
+| DS1_opti2.py.py     | dataset_1.csv  | Knapsack DP        | Numba        |
+| DS2_BF.py           | dataset_2.csv  | Brute Force        | -            |
+| DS2_opti.py         | dataset_2.csv  | Knapsack DP        | -            |
+| DS2_opti2.py        | dataset_2.csv  | Knapsack DP        | Numba        |
 
-```python
-# Exemple d'utilisation
-python Scripts/brute_force_alpha.py
+## 🛠️ Outil de Benchmark
+
+### speed_test.py
+Script de mesure de performance d'exécution avec enregistrement automatique des résultats.
+
+**Fonctionnalités :**
+- Mesure du temps d'exécution réel et interne
+- Extraction automatique du prix total et bénéfice total
+- Détection automatique du dataset utilisé
+- Logs CSV avec horodatage
+- Tableau récapitulatif
+
+**Usage :**
+```bash
+# Tester un script spécifique
+python speed_test.py Scripts/DS1_opti2.py.py
+# Tester tous les scripts du dossier Scripts
+python speed_test.py --all
 ```
 
-### 2️⃣ Algorithme Optimisé (Greedy)
+## 📦 Installation
 
-**Complexité :** O(n log n) - Linéarithmique
+### Prérequis
+- Python 3.10+
+- pip
 
-**Principe :** Algorithme glouton qui trie les actions par pourcentage de profit décroissant, puis sélectionne les actions tant que le budget le permet.
 
-**Fichiers :**
-- `Scripts/optimized_DS1.py` - Version optimisée pour dataset 1
-- `Scripts/optimized_DS2.py` - Version optimisée pour dataset 2
+### Dépendances
 
-**Performances :**
-- 🎯 Utilisation du budget : ~100% (499.94-499.98€)
-- 📈 Rendement global : ~39.5-39.7%
-- ⚡ Temps d'exécution : ~0.02 secondes
-
-**Avantages :**
-- ✅ Très rapide (même sur 1000+ actions)
-- ✅ Excellente utilisation du budget
-- ✅ Solution quasi-optimale
-
-```python
-# Exemple d'utilisation
-python Scripts/optimized_DS1.py
+```bash
+# Créer un environnement virtuel
+python -m venv .venv
+# Activer l'environnement (Windows)
+.venv\Scripts\activate
+# Installer toutes les dépendances (y compris Numba)
+pip install -r requirements.txt
 ```
 
-### 3️⃣ Algorithme Knapsack (Programmation Dynamique)
+> **Remarque :** Numba est requis pour exécuter les scripts _opti2. Il est maintenant inclus dans requirements.txt.
 
-**Complexité :** O(n × W) où W = capacité du sac (budget)
+## 🏃 Démarrage Rapide
 
-**Principe :** Utilise la programmation dynamique pour garantir la solution optimale. L'algorithme construit une table DP en convertissant les prix en centimes pour éviter les décimales.
-
-**Fichiers :**
-- `Scripts/AI-optimized_knap_DS1.py` - Knapsack optimisé pour dataset 1
-- `Scripts/AI-optimized_knap_DS2.py` - Knapsack optimisé pour dataset 2
-
-**Performances :**
-- 🎯 Utilisation du budget : ~99.99% (499.92-499.96€)
-- 📈 Rendement global : ~39.6-39.7%
-- ⚡ Temps d'exécution : ~1.5-3.0 secondes (interne), ~1.9-3.0s (total)
-
-**Avantages :**
-- ✅ Solution garantie optimale (contrairement au greedy)
-- ✅ Temps raisonnable même sur 1000 actions
-- ✅ Optimisation mémoire (2 lignes au lieu de n×W)
-
-```python
-# Exemple d'utilisation
-python Scripts/AI-optimized_knap_DS1.py
+```bash
+# 1. Tester l'algorithme optimisé Numba sur dataset 1
+python Scripts/DS1_opti2.py.py
+# 2. Comparer avec la version DP classique
+python Scripts/DS1_opti.py
+# 3. Benchmarker tous les scripts
+python speed_test.py --all
 ```
+
+## 🧮 Complexité Algorithmique
+
+| Algorithme         | Temps         | Espace      | Optimal  |
+|--------------------|---------------|-------------|----------|
+| Brute Force        | O(2ⁿ)         | O(n)        | ✅      |
+| DP                 | O(n × W)      | O(W)        | ✅      |
+| Numba              | O(n × W)      | O(W)        | ✅      |
+
+## 📋 Structure du Projet
+
+
+```
+P7_Algorithmes/
+│
+├── Scripts/
+│   ├── alpha_BF.py
+│   ├── alpha_opti.py
+│   ├── DS1_BF.py
+│   ├── DS1_opti.py
+│   ├── DS1_opti2.py.py
+│   ├── DS2_BF.py
+│   ├── DS2_opti.py
+│   ├── DS2_opti2.py
+│   └── ...
+├── data/
+│   ├── Actions.csv
+│   ├── dataset_1.csv
+│   ├── dataset_2.csv
+│   └── Decisions_achat_*.txt
+├── speed_test.py
+├── requirements.txt
+├── README.md
+└── .gitignore
+```
+
+**Non suivis par git (ignorés) :**
+- `.venv/` (environnement virtuel Python)
+- `.vscode/` (config VS Code)
+- `data/speed_test_records.csv` (logs de benchmark)
+- `first_search/` (dossier de travail temporaire)
+- `*.ipynb` (notebooks Jupyter)
+- `Numba_test.md` (notes/tests temporaires)
+
+## 🔧 Améliorations Possibles
+
+1. **Branch & Bound** : Accélérer le brute-force avec élagage
+2. **FPTAS** : Approximation rapide du knapsack
+3. **API REST** : Exposer les algos via une API web
+4. **Interface graphique** : Visualisation interactive
+
+## 📄 Licence
+
+Projet éducatif OpenClassroom - C7
+
+## 👤 Auteur
+
+**MithrandirEa**
+- GitHub: [@MithrandirEa](https://github.com/MithrandirEa)
+- Repository: [P7_Algorithmes](https://github.com/MithrandirEa/P7_Algorithmes)
+
+---
+
+*Dernière mise à jour : 15 décembre 2025*
 
 ## 🛠️ Outil de Benchmark
 
@@ -193,15 +278,9 @@ python speed_test.py --all
 ## 📋 Répartition des scripts par algorithme
 
 - **Greedy** : DS1_clean.py, DS2_clean.py, DS1_opti.py, DS2_opti.py
-- **Knapsack DP** : AI-optimized_knap_DS1.py, AI-optimized_knap_DS2.py, optimized_DS1.py, optimized_DS2.py, alpha_opti.py
+- **DP** : AI-optimized_knap_DS1.py, AI-optimized_knap_DS2.py, optimized_DS1.py, optimized_DS2.py, alpha_opti.py
 - **Brute Force** : DS1_BF.py, DS2_BF.py, alpha_BF.py
 
-## ⚡ Note sur l'optimisation FPTAS
-
-Pour passer sous la barre de 1 seconde sur 1000 actions, il est possible d'utiliser une version FPTAS du knapsack :
-- On réduit la granularité du budget (ex : arrondi à 0.5€ ou 1€)
-- La complexité devient O(n × W') avec W' << W
-- La solution reste quasi-optimale (écart <0.1%)
 
 ## 🕒 Date de dernière mise à jour
 
@@ -234,31 +313,6 @@ P7_Algorithmes/
 └── README.md                      # Ce fichier
 
 ```
-
-## 🎓 Concepts Clés
-
-### Problème du Sac à Dos (Knapsack Problem)
-Ce projet est une variante du problème classique du sac à dos 0/1 :
-- Chaque action a un **poids** (prix) et une **valeur** (bénéfice)
-- On cherche à maximiser la valeur totale sans dépasser la capacité (500€)
-
-### Algorithme Glouton (Greedy)
-L'algorithme optimisé utilise une stratégie gloutonne :
-1. Calculer le ratio profit/prix pour chaque action
-2. Trier par profit décroissant (déjà le ratio dans notre cas)
-3. Sélectionner les actions dans l'ordre tant que le budget le permet
-
-**Pourquoi ça marche ?**
-Le tri par pourcentage de profit maximise le rendement par euro investi, assurant une utilisation optimale du budget.
-
-## 🔧 Améliorations Possibles
-
-1. **Branch & Bound** : Accélérer le brute-force avec élagage intelligent
-2. **Algorithmes avancés** : Branch & Cut, FPTAS (Fully Polynomial Time Approximation Scheme)
-3. **Génération de rapports PDF** : Export automatique des résultats avec graphiques
-4. **API REST** : Exposer les algorithmes via une API web
-5. **Interface graphique** : Visualisation interactive des résultats et comparaisons
-6. **Analyse de sensibilité** : Impact de la variation du budget sur les résultats
 
 ## 📄 Licence
 

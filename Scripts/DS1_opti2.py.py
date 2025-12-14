@@ -56,8 +56,6 @@ print(f"Profit total des actions sélectionnées sur 2 ans: {total_benefit:.2f} 
 print(f"Nombre d'actions: {len(selected_actions)}")
 print(f"Temps d'exécution: {t_stop - t_start:.4f} secondes")
 
-# Affichage standardisé pour speed_test.py
-print(f"[RESULT] PRIX_TOTAL={total_price:.2f} BENEFICE_TOTAL={total_benefit:.2f} TEMPS={t_stop - t_start:.4f}")
 
 # Affichage compatible speed_test.py (sans accent ni apostrophe)
 print(f"Total price: {total_price:.2f} euros")
