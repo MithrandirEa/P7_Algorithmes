@@ -20,12 +20,12 @@ Projet OpenClassroom C7. Objectif: composer un portefeuille maximisant le béné
 - Garantit l'optimalité mais impraticable pour de grands n (timeout appliqué).
 - Scripts: `Scripts/alpha_BF.py`, `Scripts/DS1_BF.py`, `Scripts/DS2_BF.py`.
 
-### 2) Knapsack (Programmation Dynamique)
-- Modélisation sac-à-dos 0/1 avec conversion des prix en centimes.
+### 2) Programmation Dynamique
+- Modélisation knapsack 0/1 avec conversion des prix en centimes.
 - Complexité temps: O(n × W) avec W = budget en centimes. Mémoire: O(W).
 - Scripts: `Scripts/alpha_opti.py`, `Scripts/DS1_opti.py`, `Scripts/DS2_opti.py`.
 
-### 3) Knapsack optimisé Numba (JIT)
+### 3) DP optimisée Numba (JIT)
 - Même logique DP, compilée avec Numba pour accélérer les boucles critiques.
 - Complexité temps: O(n × W) (plus rapide en pratique). Mémoire: O(W).
 - Scripts: `Scripts/DS1_opti2.py.py`, `Scripts/DS2_opti2.py`.
@@ -75,7 +75,7 @@ L'outil affiche un récapitulatif (temps total, temps interne si disponible, sta
 | Algorithme         | Temps     | Espace | Optimal |
 |--------------------|----------|--------|---------|
 | Brute Force        | O(2^n)   | O(n)   | ✅ |
-| DP (Knapsack)      | O(n×W)   | O(W)   | ✅ |
+| DP 			     | O(n×W)   | O(W)   | ✅ |
 | DP (Numba JIT)     | O(n×W)   | O(W)   | ✅ |
 
 n = nombre d'actions, W = budget en centimes.
@@ -108,7 +108,7 @@ P7_Algorithmes/
 - Les versions Numba requièrent que les tableaux passés à la fonction JIT soient des `numpy.ndarray` typés (fait dans les scripts `*_opti2`).
 
 ## 📝 Licence & Auteur
-Projet éducatif OpenClassroom — C7
+Projet éducatif OpenClassroom — C7 - Par SCIPION Clément
 
 Auteur: **MithrandirEa**
 - GitHub: https://github.com/MithrandirEa
