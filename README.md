@@ -11,14 +11,14 @@ Projet OpenClassroom C7. Objectif: composer un portefeuille maximisant le béné
 - `data/Actions.csv` (20 actions) — prototypage rapide.
 - `data/dataset_1.csv` (1000 actions) — production.
 - `data/dataset_2.csv` (1000 actions) — production.
-- Les colonnes utilisées: `name`, `price` (en €), `profit` (en %). Le bénéfice 2 ans est calculé: `benefit_2y = price * profit / 100`.
+- Les colonnes utilisées: `name`, `price` (en €), `profit` (en €). Le `profit` représente directement le bénéfice sur 2 ans (`benefit_2y`).
 
 ## 🚀 Algorithmes
 
 ### 1) Brute Force (recherche exhaustive)
 - Complexité temps: O(2^n). Complexité mémoire: O(n).
 - Garantit l'optimalité mais impraticable pour de grands n (timeout appliqué).
-- Scripts: `Scripts/alpha_BF.py`, `Scripts/DS1_BF.py`, `Scripts/DS2_BF.py`.
+- Script principal: `bruteforce.py`.
 
 ### 2) Programmation Dynamique
 - Modélisation knapsack 0/1 avec conversion des prix en centimes.
@@ -28,18 +28,16 @@ Projet OpenClassroom C7. Objectif: composer un portefeuille maximisant le béné
 ### 3) DP optimisée Numba (JIT)
 - Même logique DP, compilée avec Numba pour accélérer les boucles critiques.
 - Complexité temps: O(n × W) (plus rapide en pratique). Mémoire: O(W).
-- Scripts: `Scripts/DS1_opti2.py.py`, `Scripts/DS2_opti2.py`.
+- Scripts: `Scripts/DS1_opti2.py`, `Scripts/DS2_opti2.py`.
 - Remarque: Numba est inclus via `requirements.txt`.
 
 ## 🗃️ Vue d'ensemble des scripts
 | Script              | Dataset         | Algorithme            | Notes |
 |---------------------|-----------------|-----------------------|-------|
-| `alpha_BF.py`       | Actions.csv     | Brute Force           | Démo 20 actions |
+| `bruteforce.py`     | Interactif      | Brute Force           | Timeout de sécurité |
 | `alpha_opti.py`     | Actions.csv     | Knapsack DP           | Démo 20 actions |
-| `DS1_BF.py`         | dataset_1.csv   | Brute Force           | Timeout de sécurité |
 | `DS1_opti.py`       | dataset_1.csv   | Knapsack DP           | Optimal |
-| `DS1_opti2.py.py`   | dataset_1.csv   | Knapsack DP + Numba   | JIT accéléré |
-| `DS2_BF.py`         | dataset_2.csv   | Brute Force           | Timeout de sécurité |
+| `DS1_opti2.py`      | dataset_1.csv   | Knapsack DP + Numba   | JIT accéléré |
 | `DS2_opti.py`       | dataset_2.csv   | Knapsack DP           | Optimal |
 | `DS2_opti2.py`      | dataset_2.csv   | Knapsack DP + Numba   | JIT accéléré |
 
@@ -54,17 +52,24 @@ pip install -r requirements.txt
 ```
 
 ## ▶️ Utilisation rapide
-Exécuter un script individuel:
+
+### Brute Force (interactif)
+```powershell
+python bruteforce.py
+# Entrez le chemin du dataset (ex: data/dataset_1.csv)
+```
+
+### Scripts optimisés
 ```powershell
 python Scripts/alpha_opti.py
 python Scripts/DS1_opti.py
-python Scripts/DS1_opti2.py.py
+python Scripts/DS1_opti2.py
 ```
 
-Utiliser l'outil de benchmark:
+### Outil de benchmark
 ```powershell
 # Un script spécifique
-python speed_test.py Scripts/DS1_opti2.py.py
+python speed_test.py Scripts/DS1_opti2.py
 # Tous les scripts du dossier Scripts
 python speed_test.py --all
 ```
@@ -84,20 +89,18 @@ n = nombre d'actions, W = budget en centimes.
 ```
 P7_Algorithmes/
 ├── Scripts/
-│   ├── alpha_BF.py
 │   ├── alpha_opti.py
-│   ├── DS1_BF.py
 │   ├── DS1_opti.py
-│   ├── DS1_opti2.py.py
-│   ├── DS2_BF.py
+│   ├── DS1_opti2.py
 │   ├── DS2_opti.py
-│   ├── DS2_opti2.py
+│   └── DS2_opti2.py
 ├── data/
 │   ├── Actions.csv
 │   ├── dataset_1.csv
 │   ├── dataset_2.csv
 │   ├── Decisions_achat_1.txt
 │   └── Decisions-achat-2.txt
+├── bruteforce.py
 ├── speed_test.py
 ├── requirements.txt
 └── README.md
@@ -106,6 +109,7 @@ P7_Algorithmes/
 ## 🔧 Notes
 - Les scripts DP utilisent une table 1D (`O(W)`) et une matrice `keep` pour reconstituer la solution.
 - Les versions Numba requièrent que les tableaux passés à la fonction JIT soient des `numpy.ndarray` typés (fait dans les scripts `*_opti2`).
+- Dans `bruteforce.py`, la colonne CSV `profit` est directement mappée à `benefit_2y` (même unité: euros).
 
 ## 📝 Licence & Auteur
 Projet éducatif OpenClassroom — C7 - Par SCIPION Clément
@@ -114,4 +118,4 @@ Auteur: **MithrandirEa**
 - GitHub: https://github.com/MithrandirEa
 - Repo: https://github.com/MithrandirEa/P7_Algorithmes
 
-Dernière mise à jour: 15 décembre 2025
+Dernière mise à jour: 18 décembre 2025
