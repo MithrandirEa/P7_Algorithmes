@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from time import perf_counter
-from numba import njit
+from numba import njit 
 
 DATASET_PATH = input("Entrez le chemin du dataset : ")
 
@@ -21,7 +21,7 @@ max_budget_cents = max_budget * 100
 
 t_start = perf_counter()
 
-
+""" le décorateur njit compile la fonction avec numba pour accélérer la boucle """
 @njit
 def knapsack_numba(prices, benefits, n, max_budget_cents):
     dp = np.zeros(max_budget_cents + 1, dtype=np.float32)
