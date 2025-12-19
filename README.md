@@ -106,11 +106,6 @@ P7_Algorithmes/
 └── README.md
 ```
 
-## 🔧 Notes
-- Les scripts DP utilisent une table 1D (`O(W)`) et une matrice `keep` pour reconstituer la solution.
-- Les versions Numba requièrent que les tableaux passés à la fonction JIT soient des `numpy.ndarray` typés (fait dans les scripts `*_opti2`).
-- Dans `bruteforce.py`, la colonne CSV `profit` est directement mappée à `benefit_2y` (même unité: euros).
-
 ## 📝 Licence & Auteur
 Projet éducatif OpenClassroom — C7 - Par SCIPION Clément
 
