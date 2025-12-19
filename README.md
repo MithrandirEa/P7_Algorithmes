@@ -35,11 +35,11 @@ Projet OpenClassroom C7. Objectif: composer un portefeuille maximisant le béné
 | Script              | Dataset         | Algorithme            | Notes |
 |---------------------|-----------------|-----------------------|-------|
 | `bruteforce.py`     | Interactif      | Brute Force           | Timeout de sécurité |
-| `alpha_opti.py`     | Actions.csv     | Knapsack DP           | Démo 20 actions |
-| `DS1_opti.py`       | dataset_1.csv   | Knapsack DP           | Optimal |
-| `DS1_opti2.py`      | dataset_1.csv   | Knapsack DP + Numba   | JIT accéléré |
-| `DS2_opti.py`       | dataset_2.csv   | Knapsack DP           | Optimal |
-| `DS2_opti2.py`      | dataset_2.csv   | Knapsack DP + Numba   | JIT accéléré |
+| `alpha_opti.py`     | Actions.csv     |  DP           | Démo 20 actions |
+| `DS1_opti.py`       | dataset_1.csv   |  DP           | Optimal |
+| `DS1_opti2.py`      | dataset_1.csv   |  DP + Numba   | JIT accéléré |
+| `DS2_opti.py`       | dataset_2.csv   |  DP           | Optimal |
+| `DS2_opti2.py`      | dataset_2.csv   |  DP + Numba   | JIT accéléré |
 
 ## 🧰 Installation
 Prérequis: Python 3.10+, pip
