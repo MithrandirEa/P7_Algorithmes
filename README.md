@@ -1,17 +1,24 @@
 # 📈 P7_Algorithmes — Optimisation de Portefeuille d'Actions
 
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Status](https://img.shields.io/badge/Status-Completed-success)
+
 Projet OpenClassroom C7. Objectif: composer un portefeuille maximisant le bénéfice sur 2 ans sous contraintes de budget (500€), d'unicité (chaque action au plus une fois) et d'insécabilité.
 
 ## 🎯 Objectifs
-- Maximiser le bénéfice total sur 2 ans.
-- Respecter un budget total ≤ 500€.
-- Une action ne peut être achetée qu'une seule fois et n'est pas fractionnable.
+- **Maximiser** le bénéfice total sur 2 ans.
+- **Respecter** un budget total ≤ 500€.
+- **Contrainte** : Une action ne peut être achetée qu'une seule fois et n'est pas fractionnable (problème du sac à dos 0/1).
 
 ## 📊 Datasets
-- `data/Actions.csv` (20 actions) — prototypage rapide.
+- `data/Actions.csv` (20 actions) — prototypage rapide / démo algorithme force brute.
 - `data/dataset_1.csv` (1000 actions) — production.
 - `data/dataset_2.csv` (1000 actions) — production.
-- Les colonnes utilisées: `name`, `price` (en €), `profit` (en €). Le `profit` représente directement le bénéfice sur 2 ans (`benefit_2y`).
+
+**Note sur les données :**
+Les colonnes utilisées sont `name`, `price` (en €), et `profit` (en %).
+Le bénéfice absolu est calculé comme : `price * profit / 100`.
 
 ## 🚀 Algorithmes
 
